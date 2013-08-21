@@ -323,6 +323,11 @@ service whisperd /system/bin/whisperd /dev/ttyHS0
     user root
     oneshot
 
+# Fingerprint sensor daemon
+service am2server /system/bin/am2server
+    class main
+    user root
+    group root
 
 # aplogd start/stop is controlled by the persist.log.aplogd.enable system
 # property.  Don't set the property diruspendctly, because it's controlled by the
