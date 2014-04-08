@@ -4,11 +4,14 @@ $(call inherit-product, device/common/gps/gps_us_supl.mk)
 LOCAL_PATH := device/motorola/olympus
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/root/init.target.rc:root/init.target.rc \
-    $(LOCAL_PATH)/root/init.target.usb.rc:root/init.target.usb.rc \
+    $(LOCAL_PATH)/root/init.olympus.rc:root/init.olympus.rc \
+    $(LOCAL_PATH)/root/init.trace.rc:root/init.trace.rc \
+    $(LOCAL_PATH)/root/init.olympus.usb.rc:root/init.olympus.usb.rc \
     $(LOCAL_PATH)/root/ueventd.olympus.rc:root/ueventd.olympus.rc \
     $(LOCAL_PATH)/root/fstab.olympus:root/fstab.olympus
 
+## (2) Also get non-open-source GSM-specific aspects if available
+$(call inherit-product-if-exists, vendor/motorola/olympus/olympus-vendor.mk)
 
 # motorola helper scripts
 PRODUCT_COPY_FILES += \
@@ -106,61 +109,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
-
-#RIL
-PRODUCT_PROPERTY_OVERRIDES += \
-	rild.libpath=/system/lib/libmoto_ril.so \
-	persist.ril.mux.noofchannels=9 \
-	persist.ril.mux.ttydevice=/dev/ttyHS3 \
-	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=500 \
-	persist.ril.modem.ttydevice=/dev/ttySPI0 \
-	persist.ril.modem.mode=2 \
-	persist.ril.features=0x2020 \
-	persist.ril.mux.retries=500 \
-	persist.ril.mux.sleep=2 \
-	ro.kernel.android.ril=yes \
-	persist.ril.pppd.start.fail.max=16 \
-	mobiledata.interfaces=ppp0 \
-	ro.telephony.ril.v3=signalstrength,skipbrokendatacall,writeaidonly
-
-# Default network type.
-# 0 -> WCDMA preferred
-# 3 -> GSM Auto(PRL)
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.telephony.default_network=3
-
-#wifi
-PRODUCT_PROPERTY_OVERRIDES += \
-	wifi.supplicant_scan_interval=30 \
-	wifi.interface=wlan0
-
-#bluetooth
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.bt.bdaddr_path=/pds/bt/bt_bdaddr
-
-
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.opengles.version=131072 \
-	persist.sys.ui.hw=true \
-	ro.sf.lcd_density=240
-
-# Forbid format of these partitions in mount menu :
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.cwm.forbid_format=/misc,/radio,/pds,/bootloader,/recovery,/efs
-
-# Default USB Mode
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.sys.usb.config=mass_storage
-
-# Fingerprint
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.authentec.fingerprint.jar=/system/framework/am2app.jar
-	ro.authentec.fingerprint.so=/system/lib/libam2app.so
-
-# 1% battery
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.product.use_charge_counter=1
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
